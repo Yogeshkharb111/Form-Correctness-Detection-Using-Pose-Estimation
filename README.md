@@ -3,47 +3,48 @@
 This project implements a complete **exercise form correctness detection system** using **MediaPipe Pose Estimation** and **rule-based geometric analysis**.  
 It detects body keypoints from video, computes joint angles and alignment, and produces:
 
-- **Annotated exercise videos** with real-time feedback  
-- **Frame-wise CSV metrics** for detailed analysis  
+- Annotated exercise videos with real-time feedback  
+- Frame-wise CSV metrics for detailed quantitative analysis  
 
 This project was developed as part of the **Smartan.AI Computer Vision Internship Task**.
 
 ---
 
-## ⚠️ Note on Environment Compatibility
+## Environment & Execution Note
 
-This project was executed in **Google Colab**, because:
+This project was executed in **Google Colab** because:
 
-- My local Python environment had **version conflicts** with MediaPipe.
-- The required **mediapipe-redistributable** package was **not compatible** with my local OS and Python version.
-- Google Colab provides **GPU acceleration**, consistent Python versions, and a stable installation of MediaPipe.
+- The local Python environment had version conflicts with MediaPipe.
+- The required MediaPipe redistributable binaries were not compatible with the local OS and Python version.
+- Google Colab provides a stable MediaPipe installation with consistent Python versions.
 
-Therefore, all the command examples in this README use Colab-style syntax (`!python`, `%cd`, etc.).
-
----
-
-## 🚀 Features
-
-- ✔ Human pose estimation using **MediaPipe**  
-- ✔ Angle computation: elbow, shoulder, knee, back tilt  
-- ✔ Symmetry and wrist-shoulder alignment checks  
-- ✔ Rule-based correctness evaluation  
-- ✔ Real-time drawing overlays on output video  
-- ✔ CSV metrics for every frame  
-- ✔ Clean, modular code architecture  
-- ✔ MLflow integration ready (optional)
+Therefore, all command examples in this repository use **Colab-style syntax** (`!python`, `%cd`, etc.).  
+The code structure remains compatible with standard Python environments.
 
 ---
 
-## 📁 Project Structure
+## Features
+
+- Human pose estimation using MediaPipe Pose  
+- Joint angle computation (elbow, shoulder, knee, back tilt)  
+- Symmetry and wrist–shoulder alignment checks  
+- Rule-based exercise correctness evaluation  
+- Real-time skeleton overlay and visual feedback  
+- Frame-wise CSV metrics generation  
+- Modular and extensible code architecture  
+- MLflow experiment logging support (optional)
+
+---
+
+## Project Structure
 
 ```
-smartan-form-checker/
+Form-Correctness-Detection-Using-Pose-Estimation/
 │── src/
-│    ├── pose_detector.py        # Handles MediaPipe pose extraction
-│    ├── form_rules.py           # Angle rules and correctness logic
-│    ├── smoothing.py            # Filters noisy pose keypoints
-│    ├── run_video.py            # Full pipeline: detect → evaluate → annotate
+│    ├── pose_detector.py
+│    ├── form_rules.py
+│    ├── smoothing.py
+│    ├── run_video.py
 │
 │── sample_videos/
 │    ├── Bicep Curl.mp4
@@ -58,6 +59,10 @@ smartan-form-checker/
 │    ├── metrics_lateral.csv
 │    ├── metrics_squat.csv
 │
+│── mlflow_outputs/
+│    ├── videos
+│    └── csv
+│
 │── requirements.txt
 │── README.md
 │── REPORT.pdf
@@ -65,148 +70,157 @@ smartan-form-checker/
 
 ---
 
-## 🛠 Installation
+## Installation
 
-Install all dependencies:
+Install dependencies using:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Required packages:
-
+Main dependencies:
 - mediapipe  
-- opencv-python  
+- opencv-python-headless  
 - numpy  
 - pandas  
+- scipy  
+- tqdm  
+- mlflow 
 
 ---
 
-## ▶️ How to Run (Google Colab)
+## How to Run (Google Colab)
 
 Navigate to the project directory:
 
 ```bash
-%cd /content/Project/smartan-form-checker
+%cd /content/Form-Correctness-Detection-Using-Pose-Estimation
 ```
 
-### 🎯 Run Bicep Curl Analysis
+### Bicep Curl
 
 ```bash
 !python -m src.run_video \
-    --input "sample_videos/Bicep Curl.mp4" \
-    --output "out/annotated_bicep.mp4" \
-    --csv "out/metrics_bicep.csv"
+  --input "sample_videos/Bicep Curl.mp4" \
+  --output "out/annotated_bicep.mp4" \
+  --csv "out/metrics_bicep.csv"
 ```
 
-### 🎯 Run Lateral Raise Analysis
+### Lateral Raise
 
 ```bash
 !python -m src.run_video \
-    --input "sample_videos/Lateral raise.mp4" \
-    --output "out/annotated_lateral.mp4" \
-    --csv "out/metrics_lateral.csv"
+  --input "sample_videos/Lateral raise.mp4" \
+  --output "out/annotated_lateral.mp4" \
+  --csv "out/metrics_lateral.csv"
 ```
 
-### 🎯 Run Squat Analysis
+### Squat
 
 ```bash
 !python -m src.run_video \
-    --input "sample_videos/Squat.mp4" \
-    --output "out/annotated_squat.mp4" \
-    --csv "out/metrics_squat.csv"
+  --input "sample_videos/Squat.mp4" \
+  --output "out/annotated_squat.mp4" \
+  --csv "out/metrics_squat.csv"
 ```
 
 ---
 
-## 📊 Outputs
+## Outputs
 
-### 🎥 Annotated Videos
+### Annotated Videos
 
-Generated videos are stored here:
+All annotated videos are stored in:
 
 ```
 out/annotated_*.mp4
 ```
 
 Each video includes:
-
 - Pose skeleton overlay  
-- Live joint angle calculations  
-- Rule-based correctness messages  
+- Joint angle visualization  
+- Rule-based correctness feedback  
 
 ---
 
-### 📈 CSV Metrics
+### CSV Metrics
 
-Each exercise produces a detailed CSV with:
-
+Each exercise produces a CSV file containing frame-wise metrics such as:
 - Elbow angle  
-- Shoulder alignment values  
-- Back tilt angle  
-- Symmetry score  
-- Knee angle (for squats)  
-- Boolean correctness flags  
+- Shoulder alignment  
+- Back tilt  
+- Knee angle (squat)  
+- Correctness flags  
 
-**Example row:**
+Example:
 
 ```
-frame, elbow_angle, shoulder_level, back_tilt, is_correct
-0,     45.6,        0.12,           3.1,       True
+frame, elbow_angle, back_tilt, is_correct
+0, 45.6, 3.1, True
 ```
 
 ---
 
-## 🧠 Posture Rules Implemented
+## Posture Rules Implemented
 
 ### Bicep Curl
-- Elbow angle must decrease and increase smoothly  
-- Shoulder should remain stable  
-- Wrist should stay aligned below or near the elbow  
+- Elbow angle remains within a valid range  
+- Shoulder remains stable  
+- Wrist stays aligned with the elbow  
 
 ### Lateral Raise
-- Wrist → Elbow → Shoulder should form a straight horizontal line  
-- Arms raise symmetrically  
+- Wrist–Elbow–Shoulder alignment maintained  
+- Symmetric arm raise  
 - Avoid shoulder shrugging  
 
 ### Squat
-- Knee angle should drop below threshold  
-- Back tilt angle must remain safe  
-- Knees should track above toes  
+- Knee angle reaches sufficient depth  
+- Back tilt remains within safe limits  
+- Knees track over toes  
 
-More details available in **REPORT.pdf**.
-
----
-
-## 📘 REPORT (PDF)
-
-`REPORT.pdf` contains:
-
-- Full explanation of posture rules  
-- Joint angle and geometric logic  
-- Multi-person detection strategy  
-- Noise reduction methods  
-- Challenges and improvements  
+Detailed rule logic is documented in **REPORT.pdf**.
 
 ---
 
-## 🏗 Future Improvements
+## MLflow Integration (Optional)
 
-- ML-powered rep counting  
-- Exercise quality scoring model  
-- Kalman filtering for noise reduction  
-- More exercise types  
-- Web/mobile application  
+MLflow is integrated to log:
+- Experiment parameters
+- Frame-wise metrics
+- Output artifacts such as CSV files and sample frames
+
+Tracking is done using a local SQLite backend, suitable for Google Colab environments.
 
 ---
 
-## 🤝 Author
+## Project Report
 
-**Yogesh Kharb**  
-Smartan.AI Internship Candidate  
+The file `REPORT.pdf` contains:
+- Pipeline overview
+- Mathematical explanation of angle calculations
+- Rule design and thresholds
+- Noise handling techniques
+- Multi-person handling strategy
+- Challenges and future improvements
+
+---
+
+## Future Improvements
+
+- Automatic repetition counting  
+- ML-based exercise quality scoring  
+- Kalman filtering for smoother keypoints  
+- Support for additional exercises  
+- Web or mobile deployment  
+
+---
+
+## Author
+
+Yogesh Kharb  
+Computer Vision Internship Candidate  
 GitHub: https://github.com/Yogeshkharb111
 
 ---
 
-## ⭐ If this project helps you, consider giving it a star!
-
+If you find this project useful, feel free to star the repository.
