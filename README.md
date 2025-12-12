@@ -10,6 +10,18 @@ This project was developed as part of the **Smartan.AI Computer Vision Internshi
 
 ---
 
+## ⚠️ Note on Environment Compatibility
+
+This project was executed in **Google Colab**, because:
+
+- My local Python environment had **version conflicts** with MediaPipe.
+- The required **mediapipe-redistributable** package was **not compatible** with my local OS and Python version.
+- Google Colab provides **GPU acceleration**, consistent Python versions, and a stable installation of MediaPipe.
+
+Therefore, all the command examples in this README use Colab-style syntax (`!python`, `%cd`, etc.).
+
+---
+
 ## 🚀 Features
 
 - ✔ Human pose estimation using **MediaPipe**  
@@ -70,7 +82,7 @@ Required packages:
 
 ---
 
-## ▶️ How to Run
+## ▶️ How to Run (Google Colab)
 
 Navigate to the project directory:
 
@@ -149,20 +161,20 @@ frame, elbow_angle, shoulder_level, back_tilt, is_correct
 
 ### Bicep Curl
 - Elbow angle must decrease and increase smoothly  
-- Shoulder should remain stable (minimal movement)  
+- Shoulder should remain stable  
 - Wrist should stay aligned below or near the elbow  
 
 ### Lateral Raise
 - Wrist → Elbow → Shoulder should form a straight horizontal line  
-- Arms raise symmetrically on both sides  
-- Shoulder elevation ("shrugging") must be avoided  
+- Arms raise symmetrically  
+- Avoid shoulder shrugging  
 
 ### Squat
-- Knee angle should drop below threshold during descent  
-- Back tilt angle must stay within a safe range  
-- Knees should track above toes, not collapse inward  
+- Knee angle should drop below threshold  
+- Back tilt angle must remain safe  
+- Knees should track above toes  
 
-More detailed logic is explained in **REPORT.pdf**.
+More details available in **REPORT.pdf**.
 
 ---
 
@@ -170,21 +182,21 @@ More detailed logic is explained in **REPORT.pdf**.
 
 `REPORT.pdf` contains:
 
-- Complete explanation of posture rules  
-- Joint angle math and keypoint geometry  
-- Noise reduction strategy (smoothing filters)  
-- Handling multiple persons in a frame  
+- Full explanation of posture rules  
+- Joint angle and geometric logic  
+- Multi-person detection strategy  
+- Noise reduction methods  
 - Challenges and improvements  
 
 ---
 
 ## 🏗 Future Improvements
 
-- Add ML-powered rep counting  
-- Add exercise quality scoring model  
-- Use Kalman filtering for smoother angles  
-- Extend to more exercise types  
-- Create a web/mobile live feedback application  
+- ML-powered rep counting  
+- Exercise quality scoring model  
+- Kalman filtering for noise reduction  
+- More exercise types  
+- Web/mobile application  
 
 ---
 
@@ -196,4 +208,5 @@ GitHub: https://github.com/Yogeshkharb111
 
 ---
 
-## ⭐ If you find this project helpful, consider giving it a star!
+## ⭐ If this project helps you, consider giving it a star!
+
