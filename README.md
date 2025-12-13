@@ -10,6 +10,21 @@ This project was developed as part of the **Smartan.AI Computer Vision Internshi
 
 ---
 
+## 🎥 Demo Videos
+
+- **Explantion Video Pitch**
+  https://drive.google.com/file/d/1sx_qQK093Vd7u7DH1GVarRlfffR1mv66/view?usp=sharing
+  
+- **Bicep Curl (Annotated)**  
+  This Video present in out folder
+
+- **Lateral Raise (Annotated)**  
+  This Video present in out folder
+
+- **Squat (Annotated)**  
+  This Video present in out folder
+
+
 ## ⚠️ Environment & Execution Note (Important)
 
 This project was executed in **Google Colab** because:
